@@ -14,7 +14,6 @@ public class HiloServidor extends Thread {
 	boolean fin = false;
 	int cantConexiones = 0;
 	InetAddress ip1, ip2;
-	int puerto = 9998;
 	int p1, p2;
 	private int cantClientes = 0;
 	private int maxClientes = 2;
@@ -23,7 +22,7 @@ public class HiloServidor extends Thread {
 
 	public HiloServidor() {
 		try {
-			conexion = new DatagramSocket(9998);
+			conexion = new DatagramSocket(3333);
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
@@ -64,7 +63,7 @@ public class HiloServidor extends Thread {
 			//System.out.println(nroPlayer);
 			if(msg.equals("ApretoArriba")) {
 				Utiles.listener.apretoTecla(nroPlayer,"Arriba");
-			} 
+			}
 			
 			if(msg.equals("ApretoIzquierda")) {
 				Utiles.listener.apretoTecla(nroPlayer,"Izquierda");

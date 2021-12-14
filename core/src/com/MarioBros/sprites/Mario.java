@@ -241,18 +241,12 @@ public class Mario extends Sprite {
 	}
 	
 	public void correrDerecha() {
-		if (currentState != State.RUNNING) {
 			b2body.applyLinearImpulse(new Vector2(0.1f, 0), b2body.getWorldCenter(), true);
-			currentState = State.RUNNING;
 		}
-	}
-
+	
 	public void correrIzquierda() {
-		if(currentState != State.RUNNING) {
 			b2body.applyLinearImpulse(new Vector2(-0.1f, 0), b2body.getWorldCenter(), true);
-			currentState = State.RUNNING;
 		}
-	}
 	
 	public void hit(Enemy enemy) {
 		if (enemy instanceof Turtle && ((Turtle) enemy).currentState == Turtle.State.STANDING_SHELL)

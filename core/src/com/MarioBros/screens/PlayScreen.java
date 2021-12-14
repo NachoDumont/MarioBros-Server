@@ -7,6 +7,7 @@ import com.MarioBros.Utilidades.Config;
 import com.MarioBros.Utilidades.Recursos;
 import com.MarioBros.Utilidades.Render;
 import com.MarioBros.Utilidades.Texto;
+import com.MarioBros.Utilidades.Utiles;
 import com.MarioBros.Utilidades.WorldContactListener;
 import com.MarioBros.game.MarioBrosServer;
 import com.MarioBros.interfaces.JuegoEventListener;
@@ -104,8 +105,9 @@ public class PlayScreen implements Screen, JuegoEventListener {
 		music = MarioBrosServer.manager.get("audio/music/mario_music.ogg", Music.class);
 		music.setLooping(true);
 		music.setVolume(0.1f);
-		music.play();
+//		music.play();
 
+		Utiles.listener = this;
 		items = new Array<Item>();
 		itemsToSpawn = new LinkedBlockingQueue<ItemDef>();
 		servidor = new Servidor();
@@ -133,33 +135,6 @@ public class PlayScreen implements Screen, JuegoEventListener {
 
 	}
 
-	public void handleInput(float dt) {
-		if (player.mueveArriba) {
-			player.jump();
-			servidor.enviarATodos("coordenadas!player!" + player.getY() + "!" + player.getX());
-		}
-		if (player.mueveIzquierda) {
-			player.correrIzquierda();
-			servidor.enviarATodos("coordenadas!player!" + player.getY()  + "!" + player.getX());
-		}
-		if(player.mueveDerecha) {
-			player.correrDerecha();
-			servidor.enviarATodos("coordenadas!player!" + player.getY() + "!" + player.getX());
-		}
-		if (player2.mueveArriba) {
-			player2.jump();
-			servidor.enviarATodos("coordenadas!player2!" + player2.getY() + "!" + player2.getX());
-		}
-		if (player2.mueveIzquierda) {
-			player2.correrIzquierda();
-			servidor.enviarATodos("coordenadas!player2!" + player2.getY() + "!" + player2.getX());
-		}
-		if (player2.mueveDerecha) {
-			player.correrDerecha();
-			servidor.enviarATodos("coordenadas!player2!" + player2.getY() + "!" + player2.getX());
-		}
-	}
-
 	public void update(float dt) {
 		handleInput(dt);
 		handleSpawningItems();
@@ -170,7 +145,7 @@ public class PlayScreen implements Screen, JuegoEventListener {
 		player2.update(dt);
 		for (Enemy enemy : creator.getEnemies()) {
 			enemy.update(dt);
-			if (enemy.getX() < player.getX() + 224 / MarioBrosServer.PPM) {
+			if (enemy.getX() < player.getX() + 224 / MarioBrosServer.PPM || enemy.getX() < player2.getX() + 224 / MarioBrosServer.PPM) {
 				enemy.b2body.setActive(true);
 			}
 		}
@@ -303,21 +278,47 @@ public class PlayScreen implements Screen, JuegoEventListener {
 
 	@Override
 	public boolean handle(Event event) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void empezar() {
-		empieza = true;
+		this.empieza = true;
 	}
 
+	public void handleInput(float dt) {
+		if (player.mueveArriba) {
+			player.jump();
+			servidor.enviarATodos("coordenadas!player!ApretoArriba");
+		}
+		if (player.mueveIzquierda) {
+			player.correrIzquierda();
+			servidor.enviarATodos("coordenadas!player!ApretoIzquierda");
+		}
+		if(player.mueveDerecha) {
+			player.correrDerecha();
+			servidor.enviarATodos("coordenadas!player!ApretoDerecha");
+		}
+		
+		if (player2.mueveArriba) {
+			player2.jump();
+			servidor.enviarATodos("coordenadas!player2!ApretoArriba");
+		}
+		if (player2.mueveIzquierda) {
+			player2.correrIzquierda();
+			servidor.enviarATodos("coordenadas!player2!ApretoIzquierda");
+		}
+		if (player2.mueveDerecha) {
+			player2.correrDerecha();
+			servidor.enviarATodos("coordenadas!player2!ApretoDerecha");
+		}
+	}
+	
 	@Override
 	public void apretoTecla(int nroPlayer, String tecla) {
 		if (nroPlayer == 1) {
 			if (tecla.equals("Arriba")) {
 				player.mueveArriba = true;
-
 			}
 
 			if (tecla.equals("Izquierda")) {
